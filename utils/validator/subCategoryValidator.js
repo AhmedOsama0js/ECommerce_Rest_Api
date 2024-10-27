@@ -28,6 +28,6 @@ exports.createSubCategoryValidator = [
 ];
 
 exports.updateSubCategoryByIdValidator = [
-  check("id").isMongoId().withMessage("Invalid Category ID Format"),
+  check("id").isMongoId().withMessage("Invalid SubCategory ID Format"),
   validatorMiddleware,
 ];

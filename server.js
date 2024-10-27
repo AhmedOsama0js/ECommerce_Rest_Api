@@ -4,6 +4,7 @@ const morgen = require("morgan");
 const categoryRouts = require("./Routes/CategoryRoute");
 const subCategoryRouts = require("./Routes/subCategoryRoute");
 const brandRouts = require("./Routes/brandRoute");
+const productRouts = require("./Routes/productRoute");
 const connectDatabase = require("./Config/dbConfig");
 const ApiError = require("./utils/ApiError");
 const globalError = require("./middleware/errorMiddleware");
@@ -28,18 +29,17 @@ if (process.env.NODE_MODE) {
   console.log(`node mode is ${process.env.NODE_MODE}`);
 }
 
-
 //  routes ==========================================================================================================
 app.use("/api/v1/category", categoryRouts);
 app.use("/api/v1/subCategory", subCategoryRouts);
 app.use("/api/v1/brand", brandRouts);
+app.use("/api/v1/product", productRouts);
 
 app.all("*", (req, res, next) => {
   next(new ApiError(`con't find this route ${req.originalUrl}`, 400));
 });
 
 app.use(globalError);
-
 
 // تعريف ال port الخاص بالسيرفر
 const PORT = process.env.PORT || 5005;
