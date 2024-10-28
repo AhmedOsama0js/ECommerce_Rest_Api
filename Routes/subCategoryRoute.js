@@ -11,7 +11,7 @@ const {
   createSubCategory,
   getSubCategory,
   getSubCategoryById,
-  deleteSubCategoryById,
+  deleteSubCategory,
   editSubCategory,
 } = require("../Services/subCategoryService");
 
@@ -25,7 +25,7 @@ router
 router
   .route("/:id")
   .get(getSubCategoryByIdValidator, getSubCategoryById)
-  .delete(deleteSubCategoryByIdValidator, deleteSubCategoryById)
+  .delete(deleteSubCategoryByIdValidator, deleteSubCategory)
   .put(updateSubCategoryByIdValidator, editSubCategory);
 
 module.exports = router;

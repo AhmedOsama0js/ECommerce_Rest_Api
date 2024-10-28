@@ -25,9 +25,16 @@ const subCategorySchema = new Schema(
   { timestamps: true }
 );
 
+subCategorySchema.pre(/find/, function (next) {
+  this.populate({
+    path: "category",
+    select: "name"
+  });
+  next();
+});
+
 const SbCategory =
   mongoose.models.subCategory ||
   mongoose.model("subCategory", subCategorySchema);
 
 module.exports = SbCategory;
-

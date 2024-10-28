@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const categoryModel = require("../../models/categoryModel");
 const brandModel = require("../../models/brandModel");
 const subCategoryModel = require("../../models/subCategoryModel");
+const slugify = require("slugify");
 
 exports.createProductValidator = [
   check("name")
@@ -12,7 +13,11 @@ exports.createProductValidator = [
     .isLength({ min: 3 })
     .withMessage("Name is too short, must be at least 3 characters")
     .isLength({ max: 32 })
-    .withMessage("Name is too long, must be less than 32 characters"),
+    .withMessage("Name is too long, must be less than 32 characters")
+    .custom((val, { req }) => {
+      req.body.slug = slugify(val);
+      return true;
+    }),
 
   check("description")
     .notEmpty()
@@ -110,8 +115,7 @@ exports.createProductValidator = [
 
       return true;
     }),
-  
-  
+
   check("brand")
     .optional()
     .isMongoId()
@@ -149,5 +153,11 @@ exports.deleteProductValidator = [
 
 exports.updateProductValidator = [
   check("id").isMongoId().withMessage("Invalid Product ID Format"),
+  check("name")
+    .optional()
+    .custom((val, { req }) => {
+    req.body.slug = slugify(val);
+    return true;
+  }),
   validatorMiddleware,
 ];
