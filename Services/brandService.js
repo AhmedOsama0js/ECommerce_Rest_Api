@@ -1,5 +1,21 @@
 const brandModel = require("../Models/brandModel");
 const factory = require("./FactoresApi/Factors");
+const sharp = require("sharp");
+const asyncHandler = require("express-async-handler");
+const { uploadSignalImage } = require("../middleware/uploadImageMiddleware");
+
+exports.uploadBrandImage = uploadSignalImage("image");
+
+exports.resizeImg = asyncHandler(async (req, res, next) => {
+  const fileName = `brand-${Date.now()}.webp`;
+  await sharp(req.file.buffer)
+    .resize(500, 500)
+    .toFormat("webp")
+    .webp({ quality: 80 })
+    .toFile(`uploads/Brands/${fileName}`);
+  req.body.image = fileName;
+  next();
+});
 
 // GET
 exports.getBrands = factory.getAllItems(brandModel);

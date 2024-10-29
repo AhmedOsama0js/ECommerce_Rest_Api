@@ -12,6 +12,7 @@ exports.deleteOne = (name, Model) =>
     res.status(204).json();
   });
 
+
 exports.updateOne = (name, Model) =>
   asyncHandler(async (req, res, next) => {
     const document = await Model.findByIdAndUpdate(req.params.id, req.body, {
@@ -28,7 +29,8 @@ exports.updateOne = (name, Model) =>
     res.status(200).json({ data: result });
   });
 
-exports.createOne = (Model) =>
+
+  exports.createOne = (Model) =>
   asyncHandler(async (req, res) => {
     const document = await Model.create(req.body);
     const result = document.toObject();
@@ -37,7 +39,8 @@ exports.createOne = (Model) =>
     res.status(201).json({ data: result });
   });
 
-exports.getOneItem = (name, Model) =>
+
+  exports.getOneItem = (name, Model) =>
   asyncHandler(async (req, res, next) => {
     const document = await Model.findById(req.params.id).select("-slug -__v");
     if (!document) {
@@ -48,7 +51,8 @@ exports.getOneItem = (name, Model) =>
     res.status(200).json({ data: document });
   });
 
-exports.getAllItems = (Model) =>
+
+  exports.getAllItems = (Model) =>
   asyncHandler(async (req, res) => {
     const documentLength = await Model.countDocuments();
     const features = new ApiFeatures(Model.find(), req.query)

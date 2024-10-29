@@ -15,10 +15,19 @@ const brandSchema = new Schema(
       type: String,
       lowercase: true,
     },
-    images: String,
+    image: String,
   },
   { timestamps: true }
 );
+function updateImageUrl(doc) {
+  if (doc.image) {
+    const imageUrl = `${process.env.BASE_URL}/Brands/${doc.image}`;
+    doc.image = imageUrl;
+  }
+}
+
+brandSchema.post("init", updateImageUrl);
+brandSchema.post("save", updateImageUrl);
 
 const Brand = mongoose.models.brand || mongoose.model("brand", brandSchema);
 

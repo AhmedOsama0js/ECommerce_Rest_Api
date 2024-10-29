@@ -14,11 +14,22 @@ const categorySchema = new Schema(
       type: String,
       lowercase: true,
     },
-    images: String,
+    image: String,
   },
   { timestamps: true }
 );
 
-const Category = mongoose.models.category || mongoose.model("category", categorySchema);
+function updateImageUrl(doc) {
+  if (doc.image) {
+    const imageUrl = `${process.env.BASE_URL}/categories/${doc.image}`;
+    doc.image = imageUrl;
+  }
+}
+
+categorySchema.post("init", updateImageUrl);
+categorySchema.post("save", updateImageUrl);
+
+const Category =
+  mongoose.models.category || mongoose.model("category", categorySchema);
 
 module.exports = Category;

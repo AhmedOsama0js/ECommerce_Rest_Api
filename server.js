@@ -1,3 +1,4 @@
+const path = require("path");
 const express = require("express");
 const dotenv = require("dotenv");
 const morgen = require("morgan");
@@ -21,7 +22,7 @@ connectDatabase();
 // middlewares========================================================================================================
 
 app.use(express.json());
-
+app.use(express.static(path.join(__dirname,"uploads")));
 //شرط تشغيل ال nodemon  في ال dev mode
 
 if (process.env.NODE_MODE) {

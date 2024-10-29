@@ -14,6 +14,8 @@ const {
   getCategoryById,
   editCategory,
   deleteCategoryById,
+  uploadCategoryImage,
+  resizeImg,
 } = require("../Services/categoryService");
 
 const router = express.Router();
@@ -23,12 +25,22 @@ const router = express.Router();
 router
   .route("/")
   .get(getCategory)
-  .post(createCategoryValidator, createCategory);
+  .post(
+    uploadCategoryImage,
+    resizeImg,
+    createCategoryValidator,
+    createCategory
+  );
 
 router
   .route("/:id")
   .get(getCategoryByIdValidator, getCategoryById)
-  .put(updateCategoryByIdValidator, editCategory)
+  .put(
+    uploadCategoryImage,
+    resizeImg,
+    updateCategoryByIdValidator,
+    editCategory
+  )
   .delete(deleteCategoryByIdValidator, deleteCategoryById);
 
 module.exports = router;
