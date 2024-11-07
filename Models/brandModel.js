@@ -19,6 +19,7 @@ const brandSchema = new Schema(
   },
   { timestamps: true }
 );
+
 function updateImageUrl(doc) {
   if (doc.image) {
     const imageUrl = `${process.env.BASE_URL}/Brands/${doc.image}`;

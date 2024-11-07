@@ -11,12 +11,15 @@ exports.resizeImg = asyncHandler(async (req, res, next) => {
   const fileName = `category-${Date.now()}-${Math.round(
     Math.random() * 1e9
   )}.webp`;
-  await sharp(req.file.buffer)
-    .resize(500, 500)
-    .toFormat("webp")
-    .webp({ quality: 80 })
-    .toFile(`uploads/categories/${fileName}`);
-  req.body.image = fileName;
+  if (req.file) {
+    await sharp(req.file.buffer)
+      .resize(500, 500)
+      .toFormat("webp")
+      .webp({ quality: 80 })
+      .toFile(`uploads/categories/${fileName}`);
+    req.body.image = fileName;
+  }
+
   next();
 });
 

@@ -1,25 +1,12 @@
 const productModel = require("../Models/productModel");
 const factory = require("./FactoresApi/Factors");
 
-const multer = require("multer");
-const ApiError = require("../utils/ApiError");
 const sharp = require("sharp");
 const asyncHandler = require("express-async-handler");
-
-const multerStorage = multer.memoryStorage();
-
-const multerFilter = function (req, file, cb) {
-  if (file.mimetype.startsWith("image")) {
-    cb(null, true);
-  } else {
-    cb(new ApiError("Only images allowed ", 400));
-  }
-};
-
-const upload = multer({ storage: multerStorage, fileFilter: multerFilter });
+const { uploadALotOfImages } = require("../middleware/uploadImageMiddleware");
 
 // upload image
-exports.uploadCategoryImage = upload.fields([
+exports.uploadProductsImages = uploadALotOfImages([
   { name: "coverImage", maxCount: 1 },
   { name: "images", maxCount: 5 },
 ]);
@@ -29,14 +16,35 @@ exports.resizeImg = asyncHandler(async (req, res, next) => {
     const coverImageFileName = `product-${Date.now()}-${Math.round(
       Math.random() * 1e9
     )}-cover.webp`;
-    await sharp(req.file.buffer)
+    await sharp(req.files.coverImage[0].buffer)
       .resize(500, 500)
       .toFormat("webp")
       .webp({ quality: 80 })
-      .toFile(`uploads/categories/${coverImageFileName}`);
+      .toFile(`uploads/products/${coverImageFileName}`);
     req.body.coverImage = coverImageFileName;
   }
+
+  if (req.files.images) {
+    req.body.images = [];
+    await Promise.all(
+      req.files.images.map(
+        asyncHandler(async (image, i) => {
+          const ImagesFileNames = `product-${Date.now()}-${Math.round(
+            Math.random() * 1e9
+          )}-image-${i + 1}.webp`;
+          await sharp(image.buffer)
+            .resize(500, 500)
+            .toFormat("webp")
+            .webp({ quality: 80 })
+            .toFile(`uploads/products/${ImagesFileNames}`);
+          req.body.images.push(ImagesFileNames);
+        })
+      )
+    );
+  }
+  next();
 });
+
 // GET
 exports.getProducts = factory.getAllItems(productModel);
 

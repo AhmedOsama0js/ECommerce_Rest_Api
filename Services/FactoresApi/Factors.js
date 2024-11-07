@@ -24,7 +24,6 @@ exports.updateOne = (name, Model) =>
       );
     }
     const result = document.toObject();
-    delete result.slug;
     delete result.__v;
     res.status(200).json({ data: result });
   });
@@ -34,7 +33,6 @@ exports.updateOne = (name, Model) =>
   asyncHandler(async (req, res) => {
     const document = await Model.create(req.body);
     const result = document.toObject();
-    delete result.slug;
     delete result.__v;
     res.status(201).json({ data: result });
   });
@@ -42,7 +40,7 @@ exports.updateOne = (name, Model) =>
 
   exports.getOneItem = (name, Model) =>
   asyncHandler(async (req, res, next) => {
-    const document = await Model.findById(req.params.id).select("-slug -__v");
+    const document = await Model.findById(req.params.id).select("-__v");
     if (!document) {
       return next(
         new ApiError(`not found ${name} by this id (${req.params.id})`, 404)
@@ -62,7 +60,7 @@ exports.updateOne = (name, Model) =>
       .paginate(documentLength);
     const { mongooseQuery, paginateResult } = features;
 
-    const document = await mongooseQuery.select("-__v -slug");
+    const document = await mongooseQuery.select("-__v");
 
     res
       .status(200)

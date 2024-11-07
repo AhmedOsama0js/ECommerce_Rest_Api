@@ -7,7 +7,13 @@ const subCategoryModel = require("../../models/subCategoryModel");
 const slugify = require("slugify");
 
 exports.createProductValidator = [
- 
+  check("name")
+    .notEmpty()
+    .withMessage("Name is required")
+    .isLength({ min: 3 })
+    .withMessage("Name is too short, must be at least 3 characters")
+    .isLength({ max: 32 })
+    .withMessage("Name is too long, must be less than 32 characters"),
 
   check("description")
     .notEmpty()
@@ -44,6 +50,7 @@ exports.createProductValidator = [
 
   check("colors")
     .isArray({ min: 1 })
+    .optional()
     .withMessage("Colors must be an array with at least one color"),
 
   check("coverImage")
@@ -146,8 +153,8 @@ exports.updateProductValidator = [
   check("name")
     .optional()
     .custom((val, { req }) => {
-    req.body.slug = slugify(val);
-    return true;
-  }),
+      req.body.slug = slugify(val);
+      return true;
+    }),
   validatorMiddleware,
 ];

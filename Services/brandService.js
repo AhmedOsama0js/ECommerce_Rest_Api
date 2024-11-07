@@ -7,13 +7,17 @@ const { uploadSignalImage } = require("../middleware/uploadImageMiddleware");
 exports.uploadBrandImage = uploadSignalImage("image");
 
 exports.resizeImg = asyncHandler(async (req, res, next) => {
-  const fileName = `brand-${Date.now()}.webp`;
-  await sharp(req.file.buffer)
-    .resize(500, 500)
-    .toFormat("webp")
-    .webp({ quality: 80 })
-    .toFile(`uploads/Brands/${fileName}`);
-  req.body.image = fileName;
+  const fileName = `brand-${Date.now()}-${Math.round(
+    Math.random() * 1e9
+  )}.webp`;
+  if (req.file) {
+    await sharp(req.file.buffer)
+      .resize(500, 500)
+      .toFormat("webp")
+      .webp({ quality: 80 })
+      .toFile(`uploads/Brands/${fileName}`);
+    req.body.image = fileName;
+  }
   next();
 });
 
