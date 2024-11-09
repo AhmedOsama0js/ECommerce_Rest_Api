@@ -3,6 +3,8 @@ const factory = require("./FactoresApi/Factors");
 const sharp = require("sharp");
 const asyncHandler = require("express-async-handler");
 const { uploadSignalImage } = require("../middleware/uploadImageMiddleware");
+const ApiError = require("../utils/ApiError");
+const bcrypt = require("bcryptjs");
 
 // upload image
 exports.uploadUserImage = uploadSignalImage("image");
@@ -30,7 +32,52 @@ exports.getUserById = factory.getOneItem("user", usersModel);
 exports.createUser = factory.createOne(usersModel);
 
 // PUT
-exports.editUser = factory.updateOne("user", usersModel);
+exports.editUser = asyncHandler(async (req, res, next) => {
+  const document = await usersModel.findByIdAndUpdate(
+    req.params.id,
+    {
+      name: req.body.name,
+      slug: req.body.slug,
+      phone: req.body.phone,
+      email: req.body.email,
+      role: req.body.role,
+      image: req.body.image,
+    },
+    {
+      new: true,
+    }
+  );
+  if (!document) {
+    return next(
+      new ApiError(`not found User by this id (${req.params.id})`, 404)
+    );
+  }
+  const result = document.toObject();
+  delete result.__v;
+  res.status(200).json({ data: result });
+});
+
+// PUT User Password
+
+exports.updateUserPassword = asyncHandler(async (req, res, next) => {
+  const document = await usersModel.findByIdAndUpdate(
+    req.params.id,
+    {
+      password: await bcrypt.hash(req.body.newPassword, 12),
+    },
+    {
+      new: true,
+    }
+  );
+  if (!document) {
+    return next(
+      new ApiError(`not found User by this id (${req.params.id})`, 404)
+    );
+  }
+  const result = document.toObject();
+  delete result.__v;
+  res.status(200).json({ data: result });
+});
 
 // DELETE
 exports.deleteUserById = factory.deleteOne("user", usersModel);

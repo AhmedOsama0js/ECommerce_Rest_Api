@@ -7,6 +7,7 @@ const subCategoryRouts = require("./Routes/subCategoryRoute");
 const brandRouts = require("./Routes/brandRoute");
 const productRouts = require("./Routes/productRoute");
 const usersRouts = require("./Routes/usersRoute");
+const authRouts = require("./Routes/authRoute");
 const connectDatabase = require("./Config/dbConfig");
 const ApiError = require("./utils/ApiError");
 const globalError = require("./middleware/errorMiddleware");
@@ -23,7 +24,7 @@ connectDatabase();
 // middlewares========================================================================================================
 
 app.use(express.json());
-app.use(express.static(path.join(__dirname,"uploads")));
+app.use(express.static(path.join(__dirname, "uploads")));
 //شرط تشغيل ال nodemon  في ال dev mode
 
 if (process.env.NODE_MODE) {
@@ -37,6 +38,7 @@ app.use("/api/v1/subCategory", subCategoryRouts);
 app.use("/api/v1/brand", brandRouts);
 app.use("/api/v1/product", productRouts);
 app.use("/api/v1/user", usersRouts);
+app.use("/api/v1/auth", authRouts);
 
 app.all("*", (req, res, next) => {
   next(new ApiError(`con't find this route ${req.originalUrl}`, 400));

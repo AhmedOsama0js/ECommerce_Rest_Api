@@ -23,6 +23,7 @@ exports.resizeImg = asyncHandler(async (req, res, next) => {
 
 // GET
 exports.getBrands = factory.getAllItems(brandModel);
+
 //GET By ID
 exports.getBrandById = factory.getOneItem("brand", brandModel);
 // POST

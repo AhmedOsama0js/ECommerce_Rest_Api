@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
+const bcrypt = require("bcryptjs");
 const userSchema = new Schema(
   {
     name: {
@@ -24,7 +25,7 @@ const userSchema = new Schema(
       type: String,
       required: [true, "password is required"],
       minlength: [8, "password must be at least 8 characters"],
-      select: false,
+      // select: false,
     },
     role: {
       type: String,
@@ -36,6 +37,13 @@ const userSchema = new Schema(
   },
   { timestamps: true }
 );
+
+userSchema.pre("save", async function (next) {
+  if (this.password) {
+    this.password = await bcrypt.hash(this.password, 12);
+  }
+  next();
+});
 
 function updateImageUrl(doc) {
   if (doc.image) {
