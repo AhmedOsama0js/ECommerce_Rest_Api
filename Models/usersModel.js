@@ -27,9 +27,10 @@ const userSchema = new Schema(
       minlength: [8, "password must be at least 8 characters"],
       // select: false,
     },
+    passwordChangeAt: Date,
     role: {
       type: String,
-      enum: ["user", "admin"],
+      enum: ["user","manager","admin"],
       default: "user",
     },
     phone: String,
