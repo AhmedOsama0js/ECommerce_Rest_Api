@@ -27,15 +27,19 @@ const userSchema = new Schema(
       minlength: [8, "password must be at least 8 characters"],
       // select: false,
     },
-    passwordChangeAt: Date,
     role: {
       type: String,
-      enum: ["user","manager","admin"],
+      enum: ["user", "manager", "admin"],
       default: "user",
     },
     phone: String,
     image: String,
+    passwordChangeAt: Date,
+    resetPasswordCode: String,
+    resetPasswordExpires: Date,
+    resetPasswordVerified: Boolean,
   },
+
   { timestamps: true }
 );
 
@@ -56,6 +60,6 @@ function updateImageUrl(doc) {
 userSchema.post("init", updateImageUrl);
 userSchema.post("save", updateImageUrl);
 
-const User = mongoose.models.user || mongoose.model("Users", userSchema);
+const User = mongoose.models.user || mongoose.model("user", userSchema);
 
 module.exports = User;

@@ -1,8 +1,12 @@
+const crypto = require("crypto");
+
 const asyncHandler = require("express-async-handler");
 const ApiError = require("../utils/ApiError");
 const userModel = require("../Models/usersModel");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
+
+const sendEmail = require("../utils/sendEmail");
 
 const createToken = (payLode) =>
   jwt.sign({ userId: payLode }, process.env.JWT_SECRET_KEY, {
@@ -84,4 +88,84 @@ exports.forgotPasswordUser = asyncHandler(async (req, res, next) => {
   if (!user) {
     throw new ApiError(`user not found ${req.body.email}`, 404);
   }
+
+  const restCode = Math.floor(100000 + Math.random() * 900000);
+
+  const hashingCode = crypto
+    .createHash("sha256")
+    .update(restCode.toString())
+    .digest("hex");
+
+  user.resetPasswordCode = hashingCode;
+  user.resetPasswordExpires = Date.now() + 10 * 60 * 1000;
+  user.resetPasswordVerified = false;
+
+  await user.save();
+
+  const objectOption = {
+    to: user.email,
+    subject: "reset password",
+    text: `your reset password code is ${restCode} `,
+    html: `<p>your reset password code is ${restCode}</p>`,
+  };
+
+  try {
+    await sendEmail(objectOption);
+  } catch (err) {
+    user.resetPasswordCode = undefined;
+    user.resetPasswordExpires = undefined;
+    user.resetPasswordVerified = undefined;
+    await user.save();
+    throw new ApiError("not sending rest Password to Email", 500);
+  }
+
+  res.status(200).json({
+    status: "success",
+    message: "reset password code has been sent to your email",
+  });
+});
+
+exports.verifyRestCod = asyncHandler(async (req, res, next) => {
+  const hashingCode = crypto
+    .createHash("sha256")
+    .update(req.body.code)
+    .digest("hex");
+
+  const user = await userModel.findOne({
+    resetPasswordCode: hashingCode,
+    resetPasswordExpires: { $gt: Date.now() },
+  });
+
+  if (!user) {
+    throw new ApiError(`rest Code invalid or expired`, 404);
+  }
+
+  user.resetPasswordVerified = true;
+  await user.save();
+  res.status(200).json({
+    status: "success",
+    message: "rest code has been verified",
+  });
+});
+
+exports.updateNewPassword = asyncHandler(async (req, res, next) => {
+  const user = await userModel.findOne({ email: req.body.email });
+
+  if (!user) {
+    throw new ApiError(`user not found email (${req.body.email}) `, 404);
+  }
+
+  if (!user.resetPasswordVerified) {
+    throw new ApiError(" reset code not verified", 400);
+  }
+
+  user.password = req.body.newPassword;
+  user.resetPasswordCode = undefined;
+  user.resetPasswordExpires = undefined;
+  user.resetPasswordVerified = undefined;
+
+  await user.save();
+
+  const token = createToken(user._id);
+  res.status(200).json({ status: "success", token });
 });

@@ -58,13 +58,12 @@ exports.editUser = asyncHandler(async (req, res, next) => {
 });
 
 // PUT User Password
-
 exports.updateUserPassword = asyncHandler(async (req, res, next) => {
   const document = await usersModel.findByIdAndUpdate(
     req.params.id,
     {
       password: await bcrypt.hash(req.body.newPassword, 12),
-      passwordChangeAt: new Date()
+      passwordChangeAt: new Date(),
     },
     {
       new: true,
@@ -82,3 +81,8 @@ exports.updateUserPassword = asyncHandler(async (req, res, next) => {
 
 // DELETE
 exports.deleteUserById = factory.deleteOne("user", usersModel);
+
+exports.getMy = asyncHandler(async (req, res, next) => {
+  req.params.id = req.user._id;
+  next();
+});

@@ -17,6 +17,7 @@ const {
   uploadUserImage,
   resizeImg,
   updateUserPassword,
+  getMy,
 } = require("../Services/userService");
 
 const { AuthUser, allowedTO } = require("../Services/authService");
@@ -26,6 +27,8 @@ const router = express.Router();
 router
   .route("/updatePassword/:id")
   .put(updateUserPasswordValidator, updateUserPassword);
+
+router.route("/getMy").get(AuthUser, getMy, getUserById);
 
 router
   .route("/")
@@ -44,7 +47,7 @@ router
   .get(getUserByIdValidator, getUserById)
   .put(
     AuthUser,
-    allowedTO("manager", "admin","user"),
+    allowedTO("manager", "admin", "user"),
     uploadUserImage,
     resizeImg,
     updateUserByIdValidator,
