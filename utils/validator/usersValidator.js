@@ -153,3 +153,35 @@ exports.updateUserPasswordValidator = [
 
   validatorMiddleware,
 ];
+
+exports.updateMyDataValidator = [
+  check("name")
+    .optional()
+    .custom((val, { req }) => {
+      req.body.slug = slugify(val);
+      return true;
+    }),
+
+  check("email")
+    .optional()
+    .notEmpty()
+    .withMessage("Email is required")
+    .isEmail()
+    .withMessage("Please provide a valid email address")
+    .normalizeEmail()
+    .custom(async (val) => {
+      const user = await User.findOne({ email: val });
+      if (user) {
+        throw new Error("email is already exists");
+      }
+    })
+
+    .withMessage("Email address already exists"),
+  check("phone")
+    .optional()
+    .isMobilePhone(["ar-EG", "ar-SA"])
+    .withMessage(
+      "Please provide a valid phone number only for Egypt and Saudi Arabia"
+    ),
+  validatorMiddleware,
+];

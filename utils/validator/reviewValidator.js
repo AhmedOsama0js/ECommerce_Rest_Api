@@ -89,7 +89,8 @@ exports.updateReviewByIdValidator = [
       if (!review) {
         throw new Error(`there is not review with id ${val}`);
       }
-      if (review.user.toString() !== req.user._id.toString()) {
+
+      if (review.user._id.toString() !== req.user._id.toString()) {
         throw new Error("You are not the owner of this review");
       }
       return true;

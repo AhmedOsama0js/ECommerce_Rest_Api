@@ -16,7 +16,7 @@ const {
 } = require("../Services/subCategoryService");
 
 const { AuthUser, allowedTO } = require("../Services/authService");
-const router = express.Router({ mergeParams: true });
+const router = express.Router();
 
 router
   .route("/")

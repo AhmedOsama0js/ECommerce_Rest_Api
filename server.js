@@ -9,6 +9,8 @@ const productRouts = require("./Routes/productRoute");
 const usersRouts = require("./Routes/usersRoute");
 const authRouts = require("./Routes/authRoute");
 const reviewRouts = require("./Routes/reviewRoute");
+const wishlistRouts = require("./Routes/wishlistRoute");
+const addAddressRouts = require("./Routes/addressesRoute");
 const connectDatabase = require("./Config/dbConfig");
 const ApiError = require("./utils/ApiError");
 const globalError = require("./middleware/errorMiddleware");
@@ -41,6 +43,8 @@ app.use("/api/v1/product", productRouts);
 app.use("/api/v1/user", usersRouts);
 app.use("/api/v1/auth", authRouts);
 app.use("/api/v1/review", reviewRouts);
+app.use("/api/v1/wishlist", wishlistRouts);
+app.use("/api/v1/addresses", addAddressRouts);
 
 app.all("*", (req, res, next) => {
   next(new ApiError(`con't find this route ${req.originalUrl}`, 400));

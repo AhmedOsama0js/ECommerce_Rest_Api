@@ -5,6 +5,7 @@ const asyncHandler = require("express-async-handler");
 const { uploadSignalImage } = require("../middleware/uploadImageMiddleware");
 const ApiError = require("../utils/ApiError");
 const bcrypt = require("bcryptjs");
+const createToken = require("../utils/createToken");
 
 // upload image
 exports.uploadUserImage = uploadSignalImage("image");
@@ -82,7 +83,51 @@ exports.updateUserPassword = asyncHandler(async (req, res, next) => {
 // DELETE
 exports.deleteUserById = factory.deleteOne("user", usersModel);
 
+// GET MY
 exports.getMy = asyncHandler(async (req, res, next) => {
   req.params.id = req.user._id;
   next();
+});
+
+// PUT PASS
+
+exports.updateMyPassword = asyncHandler(async (req, res, next) => {
+  const user = await usersModel.findByIdAndUpdate(
+    req.user._id,
+    {
+      password: await bcrypt.hash(req.body.newPassword, 12),
+      passwordChangeAt: new Date(),
+    },
+    {
+      new: true,
+    }
+  );
+
+  const token = createToken(user._id);
+
+  res.status(200).json({ data: user, token });
+});
+
+// PUT DATA
+
+exports.updateMyData = asyncHandler(async (req, res, next) => {
+  const user = await usersModel.findByIdAndUpdate(
+    req.user._id,
+    {
+      name: req.body.name,
+      email: req.body.email,
+      phone: req.body.phone,
+    },
+    {
+      new: true,
+    }
+  );
+
+  res.status(200).json({ data: user });
+});
+
+// DELETE USER ACCOUNT
+exports.userDisActivateAccount = asyncHandler(async (req, res, next) => {
+  await usersModel.findByIdAndUpdate(req.user._id, { active: false });
+  res.status(204).json({ status: "success" });
 });

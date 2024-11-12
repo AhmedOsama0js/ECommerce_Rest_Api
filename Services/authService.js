@@ -1,17 +1,11 @@
 const crypto = require("crypto");
-
+const jwt = require("jsonwebtoken");
 const asyncHandler = require("express-async-handler");
 const ApiError = require("../utils/ApiError");
 const userModel = require("../Models/usersModel");
-const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
-
+const createToken = require("../utils/createToken");
 const sendEmail = require("../utils/sendEmail");
-
-const createToken = (payLode) =>
-  jwt.sign({ userId: payLode }, process.env.JWT_SECRET_KEY, {
-    expiresIn: process.env.EXPIRE_DATE,
-  });
 
 exports.signupUser = asyncHandler(async (req, res, next) => {
   const { name, email, password } = req.body;
@@ -41,7 +35,6 @@ exports.loginUser = asyncHandler(async (req, res, next) => {
 
 exports.AuthUser = asyncHandler(async (req, res, next) => {
   let token;
-
   if (
     req.header("Authorization") &&
     req.header("Authorization").startsWith("Bearer")
@@ -53,8 +46,14 @@ exports.AuthUser = asyncHandler(async (req, res, next) => {
     throw new ApiError("you are not login, login first", 404);
   }
 
-  const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
+  let decoded;
+  try {
+    decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
+  } catch (error) {
+    throw new ApiError("Invalid token. Please login again.", 401);
+  }
 
+  
   const correctsUser = await userModel.findById(decoded.userId);
 
   if (!correctsUser) {

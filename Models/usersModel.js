@@ -25,13 +25,33 @@ const userSchema = new Schema(
       type: String,
       required: [true, "password is required"],
       minlength: [8, "password must be at least 8 characters"],
-      // select: false,
+      select: false,
     },
     role: {
       type: String,
       enum: ["user", "manager", "admin"],
       default: "user",
     },
+    active: {
+      type: Boolean,
+      default: true,
+    },
+    wishlist: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "product",
+      },
+    ],
+    addresses: [
+      {
+        id: { type: mongoose.Schema.Types.ObjectId },
+        alias: String,
+        details: String,
+        phone: String,
+        city: String,
+        postalCode: String,
+      },
+    ],
     phone: String,
     image: String,
     passwordChangeAt: Date,
@@ -39,7 +59,6 @@ const userSchema = new Schema(
     resetPasswordExpires: Date,
     resetPasswordVerified: Boolean,
   },
-
   { timestamps: true }
 );
 

@@ -17,9 +17,12 @@ const {
   resizeImg,
 } = require("../Services/productService");
 
+
 const { AuthUser, allowedTO } = require("../Services/authService");
 
 const router = express.Router();
+
+
 
 router
   .route("/")
