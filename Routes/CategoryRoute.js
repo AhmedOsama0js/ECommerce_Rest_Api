@@ -1,6 +1,6 @@
 const express = require("express");
 
-// const subCategoryRoute = require("./subCategoryRoute")
+const subCategoryRoute = require("./subCategoryRoute");
 const {
   getCategoryByIdValidator,
   createCategoryValidator,
@@ -18,10 +18,11 @@ const {
   resizeImg,
 } = require("../Services/categoryService");
 
-const {AuthUser, allowedTO} = require("../Services/authService")
+const { AuthUser, allowedTO } = require("../Services/authService");
 
 const router = express.Router();
 
+router.use("/:categoryId/subcategory", subCategoryRoute);
 
 router
   .route("/")

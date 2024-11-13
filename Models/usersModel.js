@@ -25,7 +25,7 @@ const userSchema = new Schema(
       type: String,
       required: [true, "password is required"],
       minlength: [8, "password must be at least 8 characters"],
-      select: false,
+      // select: false,
     },
     role: {
       type: String,

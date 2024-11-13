@@ -13,17 +13,20 @@ const {
   getSubCategoryById,
   deleteSubCategory,
   editSubCategory,
+  createFilterObj,
+  setSubcategoryToCategoryId,
 } = require("../Services/subCategoryService");
 
 const { AuthUser, allowedTO } = require("../Services/authService");
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
 
 router
   .route("/")
-  .get(getSubCategory)
+  .get(createFilterObj, getSubCategory)
   .post(
     AuthUser,
     allowedTO("manager", "admin"),
+    setSubcategoryToCategoryId,
     createSubCategoryValidator,
     createSubCategory
   );

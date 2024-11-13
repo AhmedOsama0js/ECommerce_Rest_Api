@@ -17,12 +17,13 @@ const {
   resizeImg,
 } = require("../Services/productService");
 
+const reviewRout = require("./reviewRoute");
 
 const { AuthUser, allowedTO } = require("../Services/authService");
 
 const router = express.Router();
 
-
+router.use("/:productId/review", reviewRout);
 
 router
   .route("/")

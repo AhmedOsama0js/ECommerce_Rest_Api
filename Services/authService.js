@@ -31,6 +31,7 @@ exports.loginUser = asyncHandler(async (req, res, next) => {
   const token = createToken(user._id);
 
   res.status(200).json({ data: user, token });
+  console.log(user);
 });
 
 exports.AuthUser = asyncHandler(async (req, res, next) => {
@@ -53,7 +54,6 @@ exports.AuthUser = asyncHandler(async (req, res, next) => {
     throw new ApiError("Invalid token. Please login again.", 401);
   }
 
-  
   const correctsUser = await userModel.findById(decoded.userId);
 
   if (!correctsUser) {

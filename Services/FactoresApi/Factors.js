@@ -9,7 +9,8 @@ exports.deleteOne = (name, Model) =>
     if (!document) {
       return next(new ApiError(`not found ${name} by this id (${id})`, 404));
     }
-    res.status(204).json();
+
+    res.status(204).send();
   });
 
 exports.updateOne = (name, Model) =>
@@ -22,6 +23,10 @@ exports.updateOne = (name, Model) =>
         new ApiError(`not found ${name} by this id (${req.params.id})`, 404)
       );
     }
+    
+    
+
+    document.save();
     const result = document.toObject();
     delete result.__v;
     res.status(200).json({ data: result });
@@ -54,7 +59,13 @@ exports.getOneItem = (name, Model, populateOption) =>
 exports.getAllItems = (Model) =>
   asyncHandler(async (req, res) => {
     const documentLength = await Model.countDocuments();
-    const features = new ApiFeatures(Model.find(), req.query)
+
+    let filter = {};
+    if (req.filterObject) {
+      filter = req.filterObject;
+    }
+
+    const features = new ApiFeatures(Model.find(filter), req.query)
       .filtration()
       .searchByKeyword()
       .sort()

@@ -21,7 +21,7 @@ exports.deleteReviewByIdValidator = [
       }
 
       if (req.user === "user") {
-        if (review.user.toString() !== req.user._id.toString()) {
+        if (review.user._id.toString() !== req.user._id.toString()) {
           throw new Error("You are not the owner of this review");
         }
       }

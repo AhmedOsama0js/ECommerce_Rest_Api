@@ -1,6 +1,18 @@
 const subCategoryModel = require("../Models/subCategoryModel");
 const factory = require("./FactoresApi/Factors");
 
+exports.setSubcategoryToCategoryId = (req, res, next) => {
+  if (!req.body.category) req.body.category = req.params.categoryId;
+  next();
+};
+
+exports.createFilterObj = (req, res, next) => {
+  let filterObject = {};
+  if (req.params.categoryId) filterObject = { category: req.params.categoryId };
+  req.filterObject = filterObject;
+  next();
+};
+
 // GET
 exports.getSubCategory = factory.getAllItems(subCategoryModel);
 

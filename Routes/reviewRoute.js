@@ -13,16 +13,24 @@ const {
   createReview,
   editReview,
   deleteReviewById,
+  createFilterObj,
+  setSubcategoryToCategoryId,
 } = require("../Services/reviewService");
 
 const { AuthUser, allowedTO } = require("../Services/authService");
 
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
 
 router
   .route("/")
-  .get(getReviews)
-  .post(AuthUser, allowedTO("user"), createReviewValidator, createReview);
+  .get(createFilterObj, getReviews)
+  .post(
+    AuthUser,
+    allowedTO("user"),
+    setSubcategoryToCategoryId,
+    createReviewValidator,
+    createReview
+  );
 
 router
   .route("/:id")
