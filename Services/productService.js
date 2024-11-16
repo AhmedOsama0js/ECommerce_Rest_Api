@@ -12,6 +12,8 @@ exports.uploadProductsImages = uploadALotOfImages([
 ]);
 
 exports.resizeImg = asyncHandler(async (req, res, next) => {
+
+  if (!req.files) return next();
   if (req.files.coverImage[0].buffer) {
     const coverImageFileName = `product-${Date.now()}-${Math.round(
       Math.random() * 1e9

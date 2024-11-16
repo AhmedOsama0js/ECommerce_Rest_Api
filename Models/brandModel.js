@@ -6,10 +6,10 @@ const brandSchema = new Schema(
     name: {
       type: String,
       trim: true,
-      required: [true, "category is required"],
-      unique: [true, "category most be unique"],
-      minlength: [3, "category most be bigger 3 character"],
-      maxlength: [32, "category most be smaller 3 character"],
+      required: [true, "Brand is required"],
+      unique: [true, "Brand most be unique"],
+      minlength: [3, "Brand most be bigger 3 character"],
+      maxlength: [32, "Brand most be smaller 3 character"],
     },
     slug: {
       type: String,
