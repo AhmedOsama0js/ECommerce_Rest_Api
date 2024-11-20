@@ -1,3 +1,5 @@
+// A file for calling all routes on the site
+
 const categoryRouts = require("./CategoryRoute");
 const subCategoryRouts = require("./subCategoryRoute");
 const brandRouts = require("./brandRoute");

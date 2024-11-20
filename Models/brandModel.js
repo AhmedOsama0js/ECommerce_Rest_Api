@@ -21,7 +21,7 @@ const brandSchema = new Schema(
 );
 
 function updateImageUrl(doc) {
-  if (doc.image) {
+  if (doc.image && !doc.image.startsWith("http")) {
     const imageUrl = `${process.env.BASE_URL}/Brands/${doc.image}`;
     doc.image = imageUrl;
   }

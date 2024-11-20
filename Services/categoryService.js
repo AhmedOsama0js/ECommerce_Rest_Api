@@ -11,6 +11,7 @@ exports.resizeImg = asyncHandler(async (req, res, next) => {
   const fileName = `category-${Date.now()}-${Math.round(
     Math.random() * 1e9
   )}.webp`;
+
   if (req.file) {
     await sharp(req.file.buffer)
       .resize(500, 500)

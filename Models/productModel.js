@@ -97,15 +97,17 @@ productSchema.pre(/^find/, function (next) {
 });
 
 function updateImageUrl(doc) {
-  if (doc.coverImage) {
+  if (doc.coverImage && !doc.coverImage.startsWith("http")) {
     const imageUrl = `${process.env.BASE_URL}/products/${doc.coverImage}`;
     doc.coverImage = imageUrl;
   }
   if (doc.images) {
     const imagesList = [];
     doc.images.forEach((image) => {
-      const imageUrl = `${process.env.BASE_URL}/products/${image}`;
-      imagesList.push(imageUrl);
+      if (!image.startsWith("http")) {
+        image = `${process.env.BASE_URL}/products/${image}`;
+      }
+      imagesList.push(image);
     });
     doc.images = imagesList;
   }

@@ -1,13 +1,40 @@
 const asyncHandler = require("express-async-handler");
 const ApiError = require("../../utils/ApiError");
 const ApiFeatures = require("../../utils/ApiFeatures/ApiFeatures");
+const path = require("path");
+const fs = require("fs");
+
+// delete Files
+const deleteFiles = (image) => {
+  const parsedUrl = new URL(image).pathname;
+  const imagePath = path.join(__dirname, "..", "..", "uploads", parsedUrl);
+  fs.unlink(imagePath, (err) => {
+    if (err) {
+      console.error("Error deleting image:", err);
+    } else {
+      console.log("Image deleted successfully");
+    }
+  });
+};
 
 exports.deleteOne = (name, Model) =>
   asyncHandler(async (req, res, next) => {
     const { id } = req.params;
     const document = await Model.findByIdAndDelete(id);
+
     if (!document) {
       return next(new ApiError(`not found ${name} by this id (${id})`, 404));
+    }
+
+    if (document.image || document.coverImage) {
+      const image = document.image || document.coverImage;
+      deleteFiles(image);
+    }
+
+    if (Array.isArray(document.images)) {
+      document.images.forEach((image) => {
+        deleteFiles(image);
+      });
     }
 
     res.status(204).send();
@@ -15,19 +42,38 @@ exports.deleteOne = (name, Model) =>
 
 exports.updateOne = (name, Model) =>
   asyncHandler(async (req, res, next) => {
-    const document = await Model.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-    });
+    const { id } = req.params;
+    const document = await Model.findById(id);
+
     if (!document) {
       return next(
         new ApiError(`not found ${name} by this id (${req.params.id})`, 404)
       );
     }
-    
-    
 
-    document.save();
-    const result = document.toObject();
+    if (Array.isArray(req.body.images) && req.body.images.length > 0) {
+      await document.images.forEach((image) => {
+        deleteFiles(image);
+      });
+    }
+
+    if (req.body.image || req.body.coverImage) {
+      const image = document.image || document.coverImage;
+      if (image) {
+        deleteFiles(image);
+      }
+    }
+
+    const updatedDocument = await Model.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      {
+        new: true,
+      }
+    );
+
+    updatedDocument.save();
+    const result = updatedDocument.toObject();
     delete result.__v;
     res.status(200).json({ data: result });
   });
