@@ -31,8 +31,8 @@ router
     AuthUser,
     allowedTO("manager", "admin"),
     uploadCategoryImage,
-    resizeImg,
     createCategoryValidator,
+    resizeImg,
     createCategory
   );
 
@@ -43,8 +43,8 @@ router
     AuthUser,
     allowedTO("manager", "admin"),
     uploadCategoryImage,
-    resizeImg,
     updateCategoryByIdValidator,
+    resizeImg,
     editCategory
   )
   .delete(

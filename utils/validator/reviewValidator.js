@@ -20,7 +20,7 @@ exports.deleteReviewByIdValidator = [
         throw new Error(`there is not review with id ${val}`);
       }
 
-      if (req.user === "user") {
+      if (req.user.role === "user") {
         if (review.user._id.toString() !== req.user._id.toString()) {
           throw new Error("You are not the owner of this review");
         }
@@ -36,6 +36,8 @@ exports.createReviewValidator = [
   check("name")
     .notEmpty()
     .withMessage("Name is required")
+    .isString()
+    .withMessage("Name must be a string")
     .isLength({ min: 3 })
     .withMessage("Name is too short, must be at least 3 characters")
     .isLength({ max: 32 })
@@ -71,9 +73,11 @@ exports.createReviewValidator = [
         user: req.user._id,
         product: req.body.product,
       });
+
       if (review) {
         throw new Error("You have already reviewed this product");
       }
+
       return true;
     }),
 
@@ -92,6 +96,55 @@ exports.updateReviewByIdValidator = [
 
       if (review.user._id.toString() !== req.user._id.toString()) {
         throw new Error("You are not the owner of this review");
+      }
+      return true;
+    }),
+
+  check("name")
+    .optional()
+    .notEmpty()
+    .withMessage("Name is required")
+    .isString()
+    .withMessage("Name must be a string")
+    .isLength({ min: 3 })
+    .withMessage("Name is too short, must be at least 3 characters")
+    .isLength({ max: 32 })
+    .withMessage("Name is too long, must be less than 32 characters"),
+
+  check("rating")
+    .optional()
+    .notEmpty()
+    .withMessage("Rating is required")
+    .isFloat({ min: 1, max: 5 })
+    .withMessage("Rating value must be between 1 and 5"),
+
+  check("user")
+    .isMongoId()
+    .withMessage("Invalid User ID Format")
+    .custom(async (val, { req }) => {
+      const user = await userModel.findById(val);
+      if (!user) {
+        throw new Error(" User not found");
+      }
+      return true;
+    }),
+
+  check("product")
+    .optional()
+    .isMongoId()
+    .withMessage("Invalid Product ID Format")
+    .custom(async (val, { req }) => {
+      const product = await productModel.findById(val);
+      if (!product) {
+        throw new Error(" product not found");
+      }
+
+      const review = await reviewModel.findOne({
+        user: req.user._id,
+        product: req.body.product,
+      });
+      if (review) {
+        throw new Error("You have already reviewed this product");
       }
       return true;
     }),

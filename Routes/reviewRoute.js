@@ -14,7 +14,8 @@ const {
   editReview,
   deleteReviewById,
   createFilterObj,
-  setSubcategoryToCategoryId,
+  setReviewToProductId,
+  getUserFromReqUser,
 } = require("../Services/reviewService");
 
 const { AuthUser, allowedTO } = require("../Services/authService");
@@ -27,15 +28,22 @@ router
   .post(
     AuthUser,
     allowedTO("user"),
-    setSubcategoryToCategoryId,
+    getUserFromReqUser,
     createReviewValidator,
+    setReviewToProductId,
     createReview
   );
 
 router
   .route("/:id")
   .get(getReviewByIdValidator, getReviewById)
-  .put(AuthUser, allowedTO("user"), updateReviewByIdValidator, editReview)
+  .put(
+    AuthUser,
+    allowedTO("user"),
+    getUserFromReqUser,
+    updateReviewByIdValidator,
+    editReview
+  )
   .delete(
     AuthUser,
     allowedTO("manager", "admin", "user"),

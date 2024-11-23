@@ -44,8 +44,8 @@ router
     AuthUser,
     allowedTO("manager", "admin"),
     uploadProductsImages,
-    resizeImg,
     updateProductValidator,
+    resizeImg,
     editProduct
   )
   .delete(

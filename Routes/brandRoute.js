@@ -28,8 +28,8 @@ router
     AuthUser,
     allowedTO("manager", "admin"),
     uploadBrandImage,
-    resizeImg,
     createBrandValidator,
+    resizeImg,
     createBrand
   );
 
@@ -40,8 +40,8 @@ router
     AuthUser,
     allowedTO("manager", "admin"),
     uploadBrandImage,
-    resizeImg,
     updateBrandByIdValidator,
+    resizeImg,
     editBrand
   )
   .delete(

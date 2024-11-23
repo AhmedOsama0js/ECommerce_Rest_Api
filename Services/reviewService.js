@@ -1,7 +1,7 @@
 const reviewModel = require("../Models/reviewModel");
 const factory = require("./FactoresApi/Factors");
 
-exports.setSubcategoryToCategoryId = (req, res, next) => {
+exports.setReviewToProductId = (req, res, next) => {
   if (!req.body.product) req.body.product = req.params.productId;
   next();
 };
@@ -13,6 +13,10 @@ exports.createFilterObj = (req, res, next) => {
   next();
 };
 
+exports.getUserFromReqUser = (req, res, next) => {
+  if (req.user) req.body.user = req.user._id;
+  next();
+}
 // GET
 exports.getReviews = factory.getAllItems(reviewModel);
 

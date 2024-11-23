@@ -10,17 +10,20 @@ const couponSchema = new Schema(
       unique: [true, "Coupon most be unique"],
       minlength: [3, "Coupon most be bigger 3 character"],
       maxlength: [20, "Coupon most be smaller 20 character"],
-      unique: [true, "Coupon most be unique"],
+    },
+    slug: {
+      type: String,
+      lowercase: true,
     },
     expire: {
       type: Date,
       required: [true, "Coupon expire is required"],
+      index: { expires: "0s" },
     },
     discount: {
       type: Number,
       required: [true, "Coupon discount is required"],
-      
-    }
+    },
   },
   { timestamps: true }
 );

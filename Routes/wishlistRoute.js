@@ -1,6 +1,11 @@
 const express = require("express");
 
 const {
+  deleteWishlistByIdValidator,
+  createWishlistValidator,
+} = require("../utils/validator/wishlistValidator");
+
+const {
   addProductWithWishList,
   deleteProductWithWishList,
   getAllProductWithWishList,
@@ -11,8 +16,13 @@ const { AuthUser, allowedTO } = require("../Services/authService");
 
 router.use(AuthUser, allowedTO("user"));
 
-router.route("/").post(addProductWithWishList).get(getAllProductWithWishList);
+router
+  .route("/")
+  .post(createWishlistValidator, addProductWithWishList)
+  .get(getAllProductWithWishList);
 
-router.route("/:id").delete(deleteProductWithWishList);
+router
+  .route("/:id")
+  .delete(deleteWishlistByIdValidator, deleteProductWithWishList);
 
 module.exports = router;

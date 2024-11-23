@@ -6,6 +6,7 @@ const reviewSchema = new Schema(
   {
     name: {
       type: String,
+      required: [true, "name is required"],
     },
     rating: {
       type: Number,
@@ -46,8 +47,6 @@ reviewSchema.statics.calcAverageRatingAndQuantity = async function (productId) {
       },
     },
   ]);
-
-  console.log(result);
 
   if (result.length > 0) {
     await productModel.findOneAndUpdate(productId, {

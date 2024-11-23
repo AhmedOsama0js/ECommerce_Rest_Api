@@ -58,6 +58,8 @@ exports.updateOne = (name, Model) =>
     }
 
     if (req.body.image || req.body.coverImage) {
+      console.log("aa");
+      
       const image = document.image || document.coverImage;
       if (image) {
         deleteFiles(image);

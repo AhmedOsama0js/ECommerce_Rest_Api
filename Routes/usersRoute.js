@@ -44,8 +44,8 @@ router
   .post(
     allowedTO("manager", "admin"),
     uploadUserImage,
-    resizeImg,
     createUserValidator,
+    resizeImg,
     createUser
   );
 
@@ -55,8 +55,8 @@ router
   .put(
     allowedTO("manager", "admin", "user"),
     uploadUserImage,
-    resizeImg,
     updateUserByIdValidator,
+    resizeImg,
     editUser
   )
   .delete(
