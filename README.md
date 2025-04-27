@@ -90,6 +90,11 @@ Feel free to fork the repository and submit a pull request with your improvement
 
 ## More Info
 For more information, visit the [repository](https://github.com/AhmedOsama0js/ECommerce_Rest_Api).
-```
+To add a link to the documentation on GitHub in the `README.md`, you can include the following section:
 
-This README covers setup, features, API endpoints, and details about the technologies used in the project.
+
+## Documentation
+For full documentation, you can visit the [documentation on Postman](https://documenter.getpostman.com/view/30185655/2sB2j1hCNi).
+
+
+This will provide a clickable link to your documentation on GitHub. Just replace the link if your documentation is hosted somewhere else.
